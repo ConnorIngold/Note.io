@@ -38,7 +38,7 @@ const createTokenSendResponse = (user, res, next) => {
       if (err) {
         respondError422(res, next)
       } else {
-        res.json({
+        res.status(200).json({
           token,
         })
       }
@@ -100,11 +100,6 @@ router.post("/signup", (req, res, next) => {
 
             // sign immediately 
             return createTokenSendResponse(newUser, res, next)
-
-            // return res.status(200).json({
-            //   user: newUser,
-            //   msg: "User inserted/saved to db",
-            // })
           })
         })
       }
