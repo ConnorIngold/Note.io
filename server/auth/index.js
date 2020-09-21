@@ -8,6 +8,11 @@ const User = require("../db/user.model")
 
 const bcrypt = require("bcryptjs")
 
+const jwt = require("jsonwebtoken")
+const { timeStamp } = require("console")
+
+require("dotenv").config()
+
 const schema = Joi.object({
   username: Joi.string()
     .regex(/(^[a-zA-Z0-9_]+$)/)
@@ -15,9 +20,31 @@ const schema = Joi.object({
     .max(30)
     .required(),
   password: Joi.string().trim().min(8).required(),
+})
 
-  password2: Joi.ref("password"),
-}).with("password", "password2")
+const createTokenSendResponse = (user, res, next) => {
+  // create payload
+  const payload = {
+    _id: user._id,
+    username: user.username,
+  }
+  jwt.sign(
+    payload,
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: "1d",
+    },
+    (err, token) => {
+      if (err) {
+        respondError422(res, next)
+      } else {
+        res.json({
+          token,
+        })
+      }
+    }
+  )
+}
 
 router.get("/", (req, res) => {
   res.json({
@@ -70,12 +97,56 @@ router.post("/signup", (req, res, next) => {
               })
             }
             // else
-            return res.status(200).json({
-              user: newUser,
-              msg: "User inserted/saved to db",
-            })
+
+            // sign immediately 
+            return createTokenSendResponse(newUser, res, next)
+
+            // return res.status(200).json({
+            //   user: newUser,
+            //   msg: "User inserted/saved to db",
+            // })
           })
         })
+      }
+    })
+  } else {
+    next(result.error)
+  }
+})
+
+const respondError422 = (res, next) => {
+  res.status(422)
+  const error = new Error("Unable to login.")
+  next(error)
+}
+
+router.post("/login", (req, res, next) => {
+  const result = schema.validate(req.body)
+  // if no errors
+  if (!result.error) {
+    User.findOne({
+      username: req.body.username,
+    }).then(user => {
+      // if found user in db
+      if (user) {
+        console.log("user found")
+        console.log("Comparing passwords...")
+        // password is user input
+        // it takes its then hash's it then compares its
+        // to the one in the db
+        bcrypt.compare(req.body.password, user.password).then(result => {
+          if (result) {
+            // ps correct
+            console.log("ps correct")
+
+            createTokenSendResponse(user, res, next)
+          } else {
+            console.log("ps not correct")
+            respondError422(res, next)
+          }
+        })
+      } else {
+        respondError422(res, next)
       }
     })
   } else {
