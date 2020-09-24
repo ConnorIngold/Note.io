@@ -10,6 +10,7 @@ const checkTokenSetUser = (req, res, next) => {
         if (err) {
           console.log(err)
         }
+        // add user to req globally
         req.user = user
         next()
       })
@@ -21,6 +22,18 @@ const checkTokenSetUser = (req, res, next) => {
   }
 }
 
+const isLoggedIn = (req, res, next) => {
+  // if user exists
+  if (req.user) {
+    next()
+  } else {
+    let error = new Error('Not authorized')
+    res.status(401)
+    next(error)
+  }
+}
+
 module.exports = {
   checkTokenSetUser,
+  isLoggedIn,
 }

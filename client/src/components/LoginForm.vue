@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full max-w-md mx-auto">
-		<h1>login</h1>
+		<h1 class="h2 font-bold text-2xl mb-5">Login</h1>
 		<div v-if="errorMsg" class="flex items-center mb-4" role="alert">
 			<div
 				class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full"
@@ -128,7 +128,7 @@ export default {
 					data: body,
 				})
 					.then(result => {
-            this.signingUp = true
+						this.signingUp = true
 						// save the token to local storage
 						localStorage.token = result.data.token
 
