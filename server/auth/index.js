@@ -1,17 +1,17 @@
-const express = require("express")
+const express = require('express')
 const router = express.Router()
-const Joi = require("joi")
-const mongoose = require("mongoose")
+const Joi = require('joi')
+const mongoose = require('mongoose')
 
-const db = require("../db/connection")
-const User = require("../db/user.model")
+const db = require('../db/connection')
+const User = require('../db/user.model')
 
-const bcrypt = require("bcryptjs")
+const bcrypt = require('bcryptjs')
 
-const jwt = require("jsonwebtoken")
-const { timeStamp } = require("console")
+const jwt = require('jsonwebtoken')
+const { timeStamp } = require('console')
 
-require("dotenv").config()
+require('dotenv').config()
 
 const schema = Joi.object({
   username: Joi.string()
@@ -32,7 +32,7 @@ const createTokenSendResponse = (user, res, next) => {
     payload,
     process.env.TOKEN_SECRET,
     {
-      expiresIn: "1d",
+      expiresIn: '1d',
     },
     (err, token) => {
       if (err) {
@@ -46,38 +46,38 @@ const createTokenSendResponse = (user, res, next) => {
   )
 }
 
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   res.json({
-    message: "Hello world",
+    message: 'Hello world',
   })
 })
 
 // POST /auth/signup
 
-router.get("/signup", (req, res) => {
+router.get('/signup', (req, res) => {
   res.json({
-    message: "Hello world",
+    message: 'Hello world',
   })
 })
 
-router.post("/signup", (req, res, next) => {
-  console.log("Body: ", req.body)
+router.post('/signup', (req, res, next) => {
+  console.log('Body: ', req.body)
   // res.json(schema.validate(req.body))
 
   const result = schema.validate(req.body)
 
   if (!result.error) {
-    console.log("valid data")
+    console.log('valid data')
     const { username, password, admin, developer } = req.body
     User.findOne({
       username: req.body.username,
     }).then(user => {
       if (user) {
-        const error = new Error("That username is already in use")
+        const error = new Error('That username is already in use')
         res.status(409)
         next(error)
       } else {
-        console.log("user does not exist... yet")
+        console.log('user does not exist... yet')
         bcrypt.hash(password, 10, (err, hash) => {
           let newUser = new User({
             _id: new mongoose.Types.ObjectId(),
@@ -86,19 +86,19 @@ router.post("/signup", (req, res, next) => {
             developer: developer,
             admin: admin,
           })
-          console.log("hi")
+          console.log('hi')
           console.log(newUser)
 
           newUser.save((err, newUser) => {
             if (err) {
               return res.send({
                 success: false,
-                message: "Server error: " + err,
+                message: 'Server error: ' + err,
               })
             }
             // else
 
-            // sign immediately 
+            // sign immediately
             return createTokenSendResponse(newUser, res, next)
           })
         })
@@ -111,11 +111,11 @@ router.post("/signup", (req, res, next) => {
 
 const respondError422 = (res, next) => {
   res.status(422)
-  const error = new Error("Unable to login.")
+  const error = new Error('Unable to login.')
   next(error)
 }
 
-router.post("/login", (req, res, next) => {
+router.post('/login', (req, res, next) => {
   const result = schema.validate(req.body)
   // if no errors
   if (!result.error) {
@@ -124,19 +124,19 @@ router.post("/login", (req, res, next) => {
     }).then(user => {
       // if found user in db
       if (user) {
-        console.log("user found")
-        console.log("Comparing passwords...")
+        console.log('user found')
+        console.log('Comparing passwords...')
         // password is user input
         // it takes its then hash's it then compares its
         // to the one in the db
         bcrypt.compare(req.body.password, user.password).then(result => {
           if (result) {
             // ps correct
-            console.log("ps correct")
+            console.log('ps correct')
 
             createTokenSendResponse(user, res, next)
           } else {
-            console.log("ps not correct")
+            console.log('ps not correct')
             respondError422(res, next)
           }
         })

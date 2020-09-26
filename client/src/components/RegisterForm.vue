@@ -178,9 +178,9 @@ export default {
 					.then(result => {
 						this.signingUp = true
 						// redirect after 2 secs
-            // make looks like its doing something
-            localStorage.token = result.data.token
-            console.log(result)
+						// make looks like its doing something
+						localStorage.token = result.data.token
+						console.log(result)
 					})
 					.catch(err => (this.errorMsg = err.message))
 			}
