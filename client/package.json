@@ -12,9 +12,12 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "joi": "^17.1.1",
+    "markdown-it": "^11.0.1",
+    "markdown-it-emoji": "^1.4.0",
     "register-service-worker": "^1.7.1",
     "tailwindcss": "^1.5.2",
     "vue": "^2.6.11",
+    "vue-meta": "^2.4.0",
     "vue-router": "^3.2.0"
   },
   "devDependencies": {

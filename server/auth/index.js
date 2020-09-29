@@ -9,7 +9,6 @@ const User = require('../db/user.model')
 const bcrypt = require('bcryptjs')
 
 const jwt = require('jsonwebtoken')
-const { timeStamp } = require('console')
 
 require('dotenv').config()
 
@@ -28,14 +27,16 @@ const createTokenSendResponse = (user, res, next) => {
     _id: user._id,
     username: user.username,
   }
+  console.log('secret', process.env.TOKEN_SECRET)
   jwt.sign(
     payload,
     process.env.TOKEN_SECRET,
     {
-      expiresIn: '1d',
+      expiresIn: '7d',
     },
     (err, token) => {
       if (err) {
+        console.log('Error creating token: ', err)
         respondError422(res, next)
       } else {
         res.status(200).json({
@@ -86,9 +87,6 @@ router.post('/signup', (req, res, next) => {
             developer: developer,
             admin: admin,
           })
-          console.log('hi')
-          console.log(newUser)
-
           newUser.save((err, newUser) => {
             if (err) {
               return res.send({
@@ -141,6 +139,7 @@ router.post('/login', (req, res, next) => {
           }
         })
       } else {
+        console.log('user not found')
         respondError422(res, next)
       }
     })

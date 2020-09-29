@@ -1,12 +1,12 @@
 <template>
 	<div id="registerForm" class="w-full max-w-md mx-auto">
+		<h2 class="h2 font-bold text-2xl mb-5">Register</h2>
 		<form
 			action="submit"
 			class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
 			@submit.prevent="signUp"
 		>
 			<div class="mb-4">
-				<h2 class="h2 font-bold text-2xl mb-5">Register</h2>
 				<label
 					class="block text-gray-700 text-sm font-bold mb-2 mt-2"
 					for="username"
@@ -181,6 +181,9 @@ export default {
 						// make looks like its doing something
 						localStorage.token = result.data.token
 						console.log(result)
+						setTimeout(() => {
+							this.$router.push({path: '/dashboard'})
+						}, 1000)
 					})
 					.catch(err => (this.errorMsg = err.message))
 			}

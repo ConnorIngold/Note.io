@@ -8,7 +8,15 @@ const Note = require('../db/note.model')
 const router = express.Router()
 
 router.get('/', (req, res) => {
-  res.send('h')
+  const id = req.user._id
+  Note.find({ user_id: id })
+    .then(result => {
+      console.log(result)
+      res.send(result)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 })
 
 // ... adds title & the note
@@ -17,11 +25,7 @@ router.get('/', (req, res) => {
 // also god be thought of as merging two objects
 
 const schema = Joi.object({
-  title: Joi.string()
-    .regex(/(^[a-zA-Z0-9_]+$)/)
-    .min(2)
-    .max(30)
-    .required(),
+  title: Joi.string().min(2).max(30).required(),
   note: Joi.string().required(),
 })
 
