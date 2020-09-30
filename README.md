@@ -89,7 +89,7 @@ Add JWT-based authentication to a Node/Express/Mongo app.
 - [ ] Users can mark notes as public
   - [ ] Notes show up on profile
 
-## Admin Page:
+## Admin Page
 
 - [ ] Admin page that lists all users
   - [ ] admin table with user_id

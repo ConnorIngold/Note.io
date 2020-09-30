@@ -110,7 +110,7 @@ export default {
 		},
 	},
 	methods: {
-		login() {
+		async login() {
 			this.errorMsg = ''
 			console.log(this.user)
 			if (this.validUser()) {
@@ -140,6 +140,30 @@ export default {
 						}, 1500)
 					})
 					.catch(err => (this.errorMsg = err.message))
+
+				try {
+					this.$http({
+						method: 'post',
+						url: url,
+						headers: {
+							'content-type': 'application/json',
+						},
+						data: body,
+					})
+						.then(result => {
+							this.signingUp = true
+							// save the token to local storage
+							localStorage.token = result.data.token
+
+							// redirect after 1 secs
+							// make looks like its doing something
+							setTimeout(() => {
+								// if login successful redirect
+								this.$router.push('/dashboard')
+							}, 1500)
+						})
+						.catch(err => (this.errorMsg = err.message))
+				} catch (error) {}
 			}
 		},
 		validUser() {
