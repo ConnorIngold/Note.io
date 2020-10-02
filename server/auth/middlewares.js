@@ -29,13 +29,25 @@ const isLoggedIn = (req, res, next) => {
     console.log('user is global', req.user)
     next()
   } else {
-    let error = new Error('Not authorized')
-    res.status(401)
-    next(error)
+    unAuthorized(res, next)
   }
+}
+
+const isAdmin = (req, res, next) => {
+  if (!req.user.developer) {
+    return unAuthorized(res, next)
+  }
+  next()
+}
+
+const unAuthorized = (res, next) => {
+  let error = new Error('Not authorized')
+  res.status(401)
+  next(error)
 }
 
 module.exports = {
   checkTokenSetUser,
   isLoggedIn,
+  isAdmin,
 }

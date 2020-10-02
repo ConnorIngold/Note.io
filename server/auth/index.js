@@ -26,6 +26,8 @@ const createTokenSendResponse = (user, res, next) => {
   const payload = {
     _id: user._id,
     username: user.username,
+    admin: user.admin,
+    developer: user.developer,
   }
   console.log('secret', process.env.TOKEN_SECRET)
   jwt.sign(
