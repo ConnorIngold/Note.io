@@ -12,7 +12,7 @@ Add JWT-based authentication to a Node/Express/Mongo app.
   - [x] hash password with bcrypt
   - [x] insert into db
 - [x] Create Landing Page
-  - [] Link to Sign Up Page
+  - [x] Link to Sign Up Page
 - [x] Create Sign Up Page
   - [x] Form with: username and password
   - [x] When form is submitted
